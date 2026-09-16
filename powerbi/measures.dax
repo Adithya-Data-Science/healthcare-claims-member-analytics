@@ -1,0 +1,13 @@
+Total Claims = COUNTROWS(fact_claims)
+Distinct Members = DISTINCTCOUNT(fact_claims[member_id])
+Total Allowed = SUM(fact_claims[allowed_amount])
+Total Paid = SUM(fact_claims[paid_amount])
+Member Cost Share = SUM(fact_claims[member_cost_share])
+Denied Claims = CALCULATE([Total Claims], fact_claims[claim_status] = "Denied")
+Denial Rate = DIVIDE([Denied Claims], [Total Claims])
+Paid Inpatient Claims = CALCULATE([Total Claims], fact_claims[service_code] = "INP", fact_claims[claim_status] = "Paid")
+Inpatient Readmissions = CALCULATE(SUM(fact_claims[readmission_30d]), fact_claims[service_code] = "INP", fact_claims[claim_status] = "Paid")
+Inpatient Readmission Rate = DIVIDE([Inpatient Readmissions], [Paid Inpatient Claims])
+Claims per 1,000 Members = DIVIDE([Total Claims], [Distinct Members]) * 1000
+Average Allowed per Claim = DIVIDE([Total Allowed], [Total Claims])
+
