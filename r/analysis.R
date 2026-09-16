@@ -1,0 +1,18 @@
+dir.create("outputs/r", recursive=TRUE, showWarnings=FALSE)
+claims <- read.csv("data/raw/claims.csv")
+members <- read.csv("data/raw/members.csv")
+services <- read.csv("data/raw/services.csv")
+claims$service_date <- as.Date(claims$service_date)
+claims$year_month <- format(claims$service_date, "%Y-%m")
+monthly <- aggregate(cbind(allowed_amount, paid_amount, member_cost_share) ~ year_month, claims, sum)
+monthly$claims <- as.integer(table(claims$year_month)[monthly$year_month])
+write.csv(monthly, "outputs/r/monthly_trends.csv", row.names=FALSE)
+service_mix <- merge(claims, services, by="service_code")
+service_summary <- aggregate(cbind(allowed_amount, paid_amount) ~ service_category, service_mix, sum)
+service_summary <- service_summary[order(-service_summary$allowed_amount),]
+write.csv(service_summary, "outputs/r/service_summary.csv", row.names=FALSE)
+png("outputs/r/monthly_allowed_amount.png", width=1200, height=700)
+plot(as.Date(paste0(monthly$year_month,"-01")), monthly$allowed_amount/1e6, type="l", lwd=3, col="#17365D", xlab="Month", ylab="Allowed amount ($M)", main="Monthly allowed amount")
+grid(); dev.off()
+cat(sprintf("Claims: %s\nAllowed amount: $%.2f\nDenial rate: %.2f%%\n", format(nrow(claims),big.mark=","), sum(claims$allowed_amount), mean(claims$claim_status=="Denied")*100))
+
