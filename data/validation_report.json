@@ -1,0 +1,24 @@
+{
+  "checks": {
+    "claim_rows_50000": true,
+    "claim_id_unique": true,
+    "required_fields_complete": true,
+    "member_fk_valid": true,
+    "provider_fk_valid": true,
+    "service_fk_valid": true,
+    "status_valid": true,
+    "amounts_nonnegative": true,
+    "date_window_valid": true,
+    "paid_reconciles": true,
+    "readmission_binary": true
+  },
+  "metrics": {
+    "claims": 50000,
+    "members": 5000,
+    "providers": 300,
+    "allowed_amount": 63556686.44,
+    "paid_amount": 49193884.3,
+    "denial_rate": 0.054,
+    "inpatient_readmission_rate": 0.123
+  }
+}
